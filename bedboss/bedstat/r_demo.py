@@ -48,6 +48,19 @@ class RServiceManager:
             s = socket.socket()
             s.connect((self.host, self.port))
             s.send(file_path.encode())
+
+            response = b''  
+            while True:
+                chunk = s.recv(1024)  # Read in chunks of 1024 bytes
+                if not chunk:
+                    break 
+                response += chunk  
+
+                if "END" in response.decode('utf-8'):  
+                    break
+
+            final_response = response.decode('utf-8')
+            print(final_response.replace("END", ""))
             s.close()
         except ConnectionRefusedError:
             print("Connection refused. Make sure the R service is running.")
