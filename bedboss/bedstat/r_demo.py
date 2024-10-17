@@ -79,17 +79,22 @@ class RServiceManager:
             print("R process terminated.")
 
 
-# TODO: "tools/r-service.R" needs to be embedded in the package
 
 
-# Start the R service at the beginning of the pipeline
-rsm = RServiceManager("tools/r-service.R")
-rsm.start_service()
+if __name__ == "__main__":
+    # TODO: "tools/r-service.R" needs to be embedded in the package
 
 
-# Run any BED files through bedstat
-rsm.run_file("bedstat/data/beds/bed1.bed")
-rsm.run_file("../../test/data/bed/simpleexamples/bed1.bed")
+    # Start the R service at the beginning of the pipeline
+    rsm = RServiceManager("tools/r-service.R")
+    rsm.start_service()
 
-# After the pipeline finishes, terminate the R service
-rsm.terminate_service()
+    import time
+    
+    time.sleep(3)
+    # Run any BED files through bedstat
+    rsm.run_file("bedstat/data/beds/bed1.bed")
+    rsm.run_file("../../test/data/bed/simpleexamples/bed1.bed")
+
+    # After the pipeline finishes, terminate the R service
+    rsm.terminate_service()

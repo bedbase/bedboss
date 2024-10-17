@@ -13,6 +13,8 @@ processBED = function(path, client, port) {
     if (!file.exists(path)) {
         message("File not found: ", path)
         writeLines("File not found.", con=client)  
+		writeLines("END", con=client)  
+
         return(1)
     }
 
