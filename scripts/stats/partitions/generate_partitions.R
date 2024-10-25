@@ -66,11 +66,11 @@ calcPartitionsRef = function(query, refAssembly, bpProportion=FALSE){
 
 path = "/home/bnt4me/virginia/repos/bedboss/scripts/stats/partitions/"
 
-write.table(partitionList$intron, file = paste(path, "hg_38.intron.csv", sep=""), quote=F, row.names = F, sep ='\t')
-write.table(partitionList$promoterCore, file = paste(path, "hg_38.promoterCore.csv", sep=""), quote=F, row.names = F,sep="\t")
-write.table(partitionList$promoterProx, file = paste(path, "hg_38.promoterProx.csv", sep=""), quote=F, row.names = F,sep="\t")
-write.table(partitionList$exon, file = paste(path, "hg_38.exon.csv", sep=""), quote=F, row.names = F,sep="\t")
-write.table(partitionList$fiveUTR, file = paste(path, "hg_38.fiveUTR.csv", sep=""), quote=F, row.names = F,sep="\t")
+write.table(partitionList$intron, file = paste(path, "hg_38.intron.csv", sep=""), quote=F, row.names = F, col.names=FALSE, sep ='\t')
+write.table(partitionList$promoterCore, file = paste(path, "hg_38.promoterCore.csv", sep=""), quote=F, row.names = F,sep="\t", col.names=FALSE)
+write.table(partitionList$promoterProx, file = paste(path, "hg_38.promoterProx.csv", sep=""), quote=F, row.names = F,sep="\t", col.names=FALSE)
+write.table(partitionList$exon, file = paste(path, "hg_38.exon.csv", sep=""), quote=F, row.names = F,sep="\t", col.names=FALSE)
+write.table(partitionList$fiveUTR, file = paste(path, "hg_38.fiveUTR.csv", sep=""), quote=F, row.names = F,sep="\t", col.names=FALSE)
 write.table(partitionList$threeUTR, file = paste(path, "hg_38.threeUTR.csv", sep=""), quote=F, row.names = F,sep="\t")
 # 
 
