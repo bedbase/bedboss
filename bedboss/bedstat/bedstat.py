@@ -120,75 +120,80 @@ def bedstat(
         os.makedirs(outfolder_stats_results)
     except FileExistsError:
         pass
-    json_file_path = os.path.abspath(
-        os.path.join(outfolder_stats_results, fileid + ".json")
-    )
-    json_plots_file_path = os.path.abspath(
-        os.path.join(outfolder_stats_results, fileid + "_plots.json")
-    )
-    if not just_db_commit:
-        if not pm:
-            pm_out_path = os.path.abspath(
-                os.path.join(outfolder_stats, "pypiper", bed_digest)
-            )
-            try:
-                os.makedirs(pm_out_path)
-            except FileExistsError:
-                pass
-            pm = pypiper.PipelineManager(
-                name="bedstat-pipeline",
-                outfolder=pm_out_path,
-                pipestat_sample_name=bed_digest,
-            )
 
-        rscript_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-            "bedstat",
-            "tools",
-            "regionstat.R",
-        )
-        assert os.path.exists(rscript_path), FileNotFoundError(
-            f"'{rscript_path}' script not found"
-        )
-        command = (
-            f"Rscript {rscript_path} --bedfilePath={bedfile} "
-            f"--fileId={fileid} --openSignalMatrix={open_signal_matrix} "
-            f"--outputFolder={outfolder_stats_results} --genome={genome} "
-            f"--ensdb={ensdb} --digest={bed_digest}"
-        )
+    from bedboss.bedstat.partition_calc import calc_partitions
 
-        try:
-            pm.run(cmd=command, target=json_file_path)
-        except Exception as e:
-            _LOGGER.error(f"Pipeline failed: {e}")
-            raise BedBossException(f"Pipeline failed: {e}")
+    data = calc_partitions(bed_digest, bedfile, genome, outfolder_stats_results)
 
-    data = {}
-    if os.path.exists(json_file_path):
-        with open(json_file_path, "r", encoding="utf-8") as f:
-            data = json.loads(f.read())
-    if os.path.exists(json_plots_file_path):
-        with open(json_plots_file_path, "r", encoding="utf-8") as f_plots:
-            plots = json.loads(f_plots.read())
-    else:
-        plots = []
-
-    # unlist the data, since the output of regionstat.R is a dict of lists of
-    # length 1 and force keys to lower to correspond with the
-    # postgres column identifiers
-    data = {k.lower(): v[0] if isinstance(v, list) else v for k, v in data.items()}
-
-    for plot in plots:
-        plot_id = plot["name"]
-        data.update({plot_id: plot})
-
-    if "md5sum" in data:
-        del data["md5sum"]
-
-    if "name" in data:
-        del data["name"]
-
-    if stop_pipeline:
-        pm.stop_pipeline()
+    # json_file_path = os.path.abspath(
+    #     os.path.join(outfolder_stats_results, fileid + ".json")
+    # )
+    # json_plots_file_path = os.path.abspath(
+    #     os.path.join(outfolder_stats_results, fileid + "_plots.json")
+    # )
+    # if not just_db_commit:
+    #     if not pm:
+    #         pm_out_path = os.path.abspath(
+    #             os.path.join(outfolder_stats, "pypiper", bed_digest)
+    #         )
+    #         try:
+    #             os.makedirs(pm_out_path)
+    #         except FileExistsError:
+    #             pass
+    #         pm = pypiper.PipelineManager(
+    #             name="bedstat-pipeline",
+    #             outfolder=pm_out_path,
+    #             pipestat_sample_name=bed_digest,
+    #         )
+    #
+    #     rscript_path = os.path.join(
+    #         os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    #         "bedstat",
+    #         "tools",
+    #         "regionstat.R",
+    #     )
+    #     assert os.path.exists(rscript_path), FileNotFoundError(
+    #         f"'{rscript_path}' script not found"
+    #     )
+    #     command = (
+    #         f"Rscript {rscript_path} --bedfilePath={bedfile} "
+    #         f"--fileId={fileid} --openSignalMatrix={open_signal_matrix} "
+    #         f"--outputFolder={outfolder_stats_results} --genome={genome} "
+    #         f"--ensdb={ensdb} --digest={bed_digest}"
+    #     )
+    #
+    #     try:
+    #         pm.run(cmd=command, target=json_file_path)
+    #     except Exception as e:
+    #         _LOGGER.error(f"Pipeline failed: {e}")
+    #         raise BedBossException(f"Pipeline failed: {e}")
+    #
+    # data = {}
+    # if os.path.exists(json_file_path):
+    #     with open(json_file_path, "r", encoding="utf-8") as f:
+    #         data = json.loads(f.read())
+    # if os.path.exists(json_plots_file_path):
+    #     with open(json_plots_file_path, "r", encoding="utf-8") as f_plots:
+    #         plots = json.loads(f_plots.read())
+    # else:
+    #     plots = []
+    #
+    # # unlist the data, since the output of regionstat.R is a dict of lists of
+    # # length 1 and force keys to lower to correspond with the
+    # # postgres column identifiers
+    # data = {k.lower(): v[0] if isinstance(v, list) else v for k, v in data.items()}
+    #
+    # for plot in plots:
+    #     plot_id = plot["name"]
+    #     data.update({plot_id: plot})
+    #
+    # if "md5sum" in data:
+    #     del data["md5sum"]
+    #
+    # if "name" in data:
+    #     del data["name"]
+    #
+    # if stop_pipeline:
+    #     pm.stop_pipeline()
 
     return data

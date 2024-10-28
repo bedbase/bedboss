@@ -375,7 +375,7 @@ doItAall <- function(query, fileId, genome, cellMatrix) {
           message('Caught an error in creating: Cell specific enrichment for open chromatin plot!')
           print(e)
         }
-      ) 
+      )
     }
   }
  
@@ -420,29 +420,29 @@ cellMatrix = opt$openSignalMatrix
 gtffile = opt$ensdb
 
 
-# build BSgenome package ID to check whether it's installed
-if ( startsWith(genome, "T2T")){
-  BSg = "BSgenome.Hsapiens.NCBI.T2T.CHM13v2.0"
-} else {
-  if (startsWith(genome, "hg") | startsWith(genome, "grch")) {
-    orgName = "Hsapiens"
-  } else if (startsWith(genome, "mm") | startsWith(genome, "grcm")){
-    orgName = "Mmusculus"
-  } else if (startsWith(genome, "dm")){
-    orgName = "Dmelanogaster"
-  } else if (startsWith(genome, "ce")){
-    orgName = "Celegans"
-  } else if (startsWith(genome, "danRer")){
-    orgName = "Drerio"
-  }  else if (startsWith(genome, "TAIR")){
-    orgName = "Athaliana"
-  } else {
-    orgName = "Undefined"
-  }
-  BSg = paste0("BSgenome.", orgName , ".UCSC.", genome)
-}
-
-BSgm = paste0(BSg, ".masked")
+# # build BSgenome package ID to check whether it's installed
+# if ( startsWith(genome, "T2T")){
+#   BSg = "BSgenome.Hsapiens.NCBI.T2T.CHM13v2.0"
+# } else {
+#   if (startsWith(genome, "hg") | startsWith(genome, "grch")) {
+#     orgName = "Hsapiens"
+#   } else if (startsWith(genome, "mm") | startsWith(genome, "grcm")){
+#     orgName = "Mmusculus"
+#   } else if (startsWith(genome, "dm")){
+#     orgName = "Dmelanogaster"
+#   } else if (startsWith(genome, "ce")){
+#     orgName = "Celegans"
+#   } else if (startsWith(genome, "danRer")){
+#     orgName = "Drerio"
+#   }  else if (startsWith(genome, "TAIR")){
+#     orgName = "Athaliana"
+#   } else {
+#     orgName = "Undefined"
+#   }
+#   BSg = paste0("BSgenome.", orgName , ".UCSC.", genome)
+# }
+#
+# BSgm = paste0(BSg, ".masked")
 
 # read bed file and run doitall()
 query = LOLA::readBed(bedPath)
